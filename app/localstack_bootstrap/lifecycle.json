@@ -1,0 +1,11 @@
+{
+    "Rules": [
+      {
+        "Expiration": {
+          "Days": 14
+        },
+        "ID": "Delete after 14 days",
+        "Status": "Enabled"
+      }
+    ]
+  }
