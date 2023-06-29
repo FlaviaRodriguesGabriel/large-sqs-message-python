@@ -11,4 +11,5 @@ boto3-stubs[s3,sqs]~=1.26.129
 prometheus_metrics_proto~=18.1.2
 python-decouple~=3.6
 requests~=2.27.1
+sqs-extended-client~=0.0.10
 structlog~=21.5.0
