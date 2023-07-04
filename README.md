@@ -33,3 +33,9 @@ pip install -r app/requirements.txt
 ```bash
 docker compose -f app/docker-compose.yml -p large-message up -d
 ```
+*
+    * Create SQS and S3 bucket using localstack
+
+```bash
+sh app/localstack_bootstrap/s3_sqs_bootstrap.sh
+```
