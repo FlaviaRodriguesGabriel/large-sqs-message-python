@@ -1,4 +1,6 @@
 import boto3
+import botocore
+from loguru import logger
 import uuid
 
 
@@ -23,14 +25,27 @@ class SqsProducer:
 
         if len(message) > max_message_size:
             # Store the message in S3
-            object_key: str = str(uuid.uuid4())
-            s3_client.put_object(Body=message, Bucket=bucket_name, Key=object_key)
+            object_key: str = str(uuid.uuid4())  # Generates a key for a new s3 object
+            try:
+                s3_client.put_object(Body=message, Bucket=bucket_name, Key=object_key)
+            except botocore.exceptions.ClientError as error:
+                logger.error("Error while creating new object in S3: {}".format(error))
 
             # Send SQS message with extended attribute referencing S3 location
-            sqs_client.send_message(
-                QueueUrl=queue_url,
-                MessageBody=f"s3://{bucket_name}/{object_key}",
-            )
+            try:
+                sqs_client.send_message(
+                    QueueUrl=queue_url,
+                    MessageBody=f"s3://{bucket_name}/{object_key}",
+                )
+            except botocore.exceptions.ClientError as error:
+                logger.error(
+                    "Error while creating new message in SQS: {}".format(error)
+                )
         else:
-            # Send SQS message directly
-            sqs_client.send_message(QueueUrl=queue_url, MessageBody=message)
+            # When the message is small, send SQS message directly, without S3.
+            try:
+                sqs_client.send_message(QueueUrl=queue_url, MessageBody=message)
+            except botocore.exceptions.ClientError as error:
+                logger.error(
+                    "Error while creating new message in SQS: {}".format(error)
+                )
