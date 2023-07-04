@@ -16,7 +16,7 @@ class SqsProducer:
         bucket_name: str = "large-message"
         queue_name: str = "large-message"
 
-        # set max size of a message that will be sent in SQS (SQS limit is 256 kb)
+        # set max size of a message that will be sent in SQS (SQS limit is 256 kb, but for testing purposes, we are using a much lower threshold)
         max_message_size: int = 10
 
         queue_url: str = sqs_client.get_queue_url(QueueName=queue_name)["QueueUrl"]
